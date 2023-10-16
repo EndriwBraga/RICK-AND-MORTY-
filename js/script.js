@@ -15,21 +15,29 @@ const fetchApi = (value) => {
 }
 
 const keys = ['name', 'status', 'species', 'gender', 'origin', 'episode'];
+const newKeys = {
+    name: 'Nome',
+    status: 'Status',
+    species: 'Espécie',
+    gender: 'Gênero',
+    origin: 'Planeta de Origem',
+    episode: 'Episódios',
+}
 
 const buildResult = (result) => {
     return keys.map((key) => document.getElementById(key)).map((elem) =>{
         if(elem.checked === true && Array.isArray(result[elem.name]) === true) {
             const arrayResult = result[elem.name].join('\r\n')
-            const newElem = document.createElement('p');
-            newElem.innerHTML = `${elem.name} : ${result [elem.name]}`;
+            const newElem = document.createElement('pre');
+            newElem.innerHTML = `${newKeys[elem.name]} : ${arrayResult}`;
             content.appendChild(newElem)
         }  else if(elem.checked === true && (elem.name ==='origin')) {
             const newElem = document.createElement('p');
-            newElem.innerHTML = `${elem.name} : ${result [elem.name].name}`;
+            newElem.innerHTML = `${newKeys[elem.name]} : ${result [elem.name].name}`;
             content.appendChild(newElem)
-        }else if(elem.checked === true && typeof(result[elem.name]) !== 'object') {
+        }  else if(elem.checked === true && typeof(result[elem.name]) !== 'object') {
             const newElem = document.createElement('p');
-            newElem.innerHTML = `${elem.name} : ${result [elem.name]}`;
+            newElem.innerHTML = `${newKeys[elem.name]} : ${result [elem.name]}`;
             content.appendChild(newElem)
         }               
     });
@@ -54,3 +62,5 @@ btnGo.addEventListener('click', async (event)=>{
 
 
 });
+
+btnReset.addEventListener('click', () => location.reload());
