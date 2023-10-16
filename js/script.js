@@ -1,34 +1,56 @@
 const characterId = document.getElementById('characterID');
 const btnGo = document.getElementById('btn-go');
-const contentPre = document.getElementById('content');
+const btnReset = document.getElementById('btn-reset');
+const content = document.getElementById('content');
+const conteinerResult = document.getElementById('result-style');
 const image = document.getElementById('img');
 
 const fetchApi = (value) => {
     const result = fetch(`https://rickandmortyapi.com/api/character/${value}`)
     .then((res)=>res.json())
     .then((data) =>{
-        console.log(data);
         return data;
     })   
     return result;
 }
 
-const keys = ['name', 'status', 'species', 'gender', 'origin', 'image', 'episode'];
+const keys = ['name', 'status', 'species', 'gender', 'origin', 'episode'];
 
 const buildResult = (result) => {
-    const newObject = {};
-    keys.map((key) => document.getElementById(key)).map((elem) =>{
-        elem.checked && (newObject[elem.name] = result[elem.name]);
+    return keys.map((key) => document.getElementById(key)).map((elem) =>{
+        if(elem.checked === true && Array.isArray(result[elem.name]) === true) {
+            const arrayResult = result[elem.name].join('\r\n')
+            const newElem = document.createElement('p');
+            newElem.innerHTML = `${elem.name} : ${result [elem.name]}`;
+            content.appendChild(newElem)
+        }  else if(elem.checked === true && (elem.name ==='origin')) {
+            const newElem = document.createElement('p');
+            newElem.innerHTML = `${elem.name} : ${result [elem.name].name}`;
+            content.appendChild(newElem)
+        }else if(elem.checked === true && typeof(result[elem.name]) !== 'object') {
+            const newElem = document.createElement('p');
+            newElem.innerHTML = `${elem.name} : ${result [elem.name]}`;
+            content.appendChild(newElem)
+        }               
     });
-
-    return newObject
 }
 
 btnGo.addEventListener('click', async (event)=>{
     event.preventDefault();
-    const result = await fetchApi(characterId.value);
-    //contentPre.textContent = `${JSON.stringify(result, undefined, 2)}`;
 
-    contentPre.textContent = `${JSON.stringify(buildResult(result), undefined, 2)}`;
-    image.src = `${result.image}`;
+    if(characterId.value === '') {
+        return content.innerHTML ='É necessário fazer um filtro.';
+    } 
+
+    const result = await fetchApi(characterId.value);
+    if(content.firstChild === null){
+        image.src = `${result.image}`;
+        buildResult(result);
+    } else {
+        content.innerHTML = '';
+        image.src = `${result.image}`;
+        buildResult(result);
+    }
+
+
 });
