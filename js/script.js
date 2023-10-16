@@ -59,8 +59,6 @@ btnGo.addEventListener('click', async (event)=>{
         image.src = `${result.image}`;
         buildResult(result);
     }
-
-
 });
 
 btnReset.addEventListener('click', () => location.reload());
